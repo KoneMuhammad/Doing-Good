@@ -13,13 +13,19 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -38,10 +44,13 @@ import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.core.widget.TextViewCompat.AutoSizeTextType
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.airbnb.lottie.LottieComposition
 import com.airbnb.lottie.compose.LottieAnimation
@@ -58,14 +67,14 @@ import kotlinx.coroutines.launch
 fun LandingScreenRoute(
     modifier: Modifier = Modifier,
     containerColor: Color = MaterialTheme.colorScheme.primary,
-    shape: Shape = RoundedCornerShape(20.dp),
+    shape: Shape = RoundedCornerShape(50.dp),
     animateTouch: Boolean = true,
     shadowColor: Color = lerp(containerColor, Color.Black, 0.2f),
     shadowOffset: DpOffset = DpOffset(0.dp, 6.dp),
     contentDescription: String = "Task Screen Picture",
     resource: Painter = painterResource(id = R.drawable.background_scape),
 
-) {
+    ) {
     val viewModel: TaskViewModel = hiltViewModel()
 
     var isPushedByUser by remember { mutableStateOf(false) }
@@ -138,7 +147,7 @@ fun LandingScreenRoute(
         text = viewModel.taskItemsUiState.taskMessage.task_message,
         iterations = LottieConstants.IterateForever,
 
-    )
+        )
 
 }
 
@@ -158,25 +167,23 @@ fun LayoutOwner(
     buttonAnimation: () -> DpOffset,
     text: String,
     composition: () -> LottieComposition?,
-    iterations: Int
+    iterations: Int,
 
     ) {
-    Column(modifier = Modifier.fillMaxSize(),
+    Column(
+        modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally) {
-        Box(
-            modifier = Modifier
-                .height(380.dp)
-                .width(200.dp)
-        ) {
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+
+            TaskMessageText(text)
             LottieGif(
                 composition = composition,
-                itterations = iterations
+                itterations = iterations,
             )
-            TaskMessageText(text)
-           // BackgroundImage(resource = resource)
+            // BackgroundImage(resource = resource)
 
-        }
+
         HugeButton(
             containerColor = containerColor,
             onClickAction = onClickAction,
@@ -191,17 +198,29 @@ fun LayoutOwner(
 
     }
 }
+
 @Composable
-fun TaskMessageText(string: String){
-    Text(text = string , modifier = Modifier.size(100.dp), )
+fun TaskMessageText(string: String) {
+    BasicText(
+        modifier = Modifier
+            .width(260.dp),
+        text = string,
+        style = TextStyle(fontSize = 30.sp),
+        autoSize = TextAutoSize.StepBased(
+            minFontSize = 28.sp,
+            maxFontSize = 30.sp,
+            stepSize = 2.sp
+        )
+    )
 }
 
 @Composable
 fun LottieGif(composition: () -> LottieComposition?, itterations: Int) {
 
     LottieAnimation(
+        modifier = Modifier.size(75.dp),
         composition = composition(),
-        iterations =  itterations
+        iterations = itterations
     )
 }
 
@@ -220,7 +239,7 @@ fun HugeButton(
     Box(
         modifier = Modifier
             .padding(18.dp)
-            .size(width = 160.dp, height = 60.dp)
+            .size(width = 220.dp, height = 80.dp)
             .pointerInput(animateTouch) {
                 if (animateTouch)
                     awaitPointerEventScope {
@@ -266,18 +285,10 @@ fun BackgroundImage(resource: Painter) {
 }
 
 @Composable
-fun ButtonText(onContainerColor: Color = MaterialTheme.colorScheme.onPrimary) {
-    Text(color = onContainerColor, text = "Good Deed")
+fun BoxScope.ButtonText(onContainerColor: Color = MaterialTheme.colorScheme.onPrimary) {
+    Text(color = onContainerColor, text = "Good Deed", modifier = Modifier.align(Alignment.Center))
 }
 
 
-@Preview(name = "Light")
-@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-fun previewResource() {
-    FullbodymuscleTheme {
-
-    }
-}
 
 
