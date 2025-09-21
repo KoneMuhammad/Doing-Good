@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -23,9 +24,13 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.TextAutoSize
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,6 +41,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.lerp
@@ -45,10 +51,12 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import androidx.core.widget.TextViewCompat.AutoSizeTextType
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -83,18 +91,10 @@ fun LandingScreenRoute(
     val scope = rememberCoroutineScope()
 
     val animate = remember { Animatable(0f) }
-    val animationPercentage = animate.value
 
     val composition by rememberLottieComposition(
         LottieCompositionSpec.Url(viewModel.taskItemsUiState.taskMessage.emblem_url)
     )
-    val buttonAnimation = DpOffset(
-        shadowOffset.x * animationPercentage,
-        shadowOffset.y * animationPercentage
-    )
-    LaunchedEffect(Unit) {
-
-    }
 
     LaunchedEffect(isPushedByUser) {
         if (isPushedByUser) {
@@ -143,8 +143,13 @@ fun LandingScreenRoute(
         shape = shape,
         onPushChange = { isPushedByUser = it },
         content = { ButtonText() },
-        buttonAnimation = { buttonAnimation },
-        text = viewModel.taskItemsUiState.taskMessage.task_message,
+        buttonAnimation = {
+            DpOffset(
+                shadowOffset.x * animate.value,
+                shadowOffset.y * animate.value
+            )
+        },
+        text = { viewModel.taskItemsUiState.taskMessage.task_message },
         iterations = LottieConstants.IterateForever,
 
         )
@@ -165,24 +170,24 @@ fun LayoutOwner(
     onPushChange: (Boolean) -> Unit,
     content: @Composable BoxScope.() -> Unit,
     buttonAnimation: () -> DpOffset,
-    text: String,
+    text: () -> String,
     composition: () -> LottieComposition?,
     iterations: Int,
 
     ) {
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().background(color = MaterialTheme.colorScheme.onSurfaceVariant,),
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
 
-            TaskMessageText(text)
-            LottieGif(
-                composition = composition,
-                itterations = iterations,
-            )
-            // BackgroundImage(resource = resource)
 
+        TaskMessageText(text)
+        LottieGif(
+            composition = composition,
+            itterations = iterations,
+        )
+        // BackgroundImage(resource = resource)
 
         HugeButton(
             containerColor = containerColor,
@@ -199,15 +204,17 @@ fun LayoutOwner(
     }
 }
 
+
 @Composable
-fun TaskMessageText(string: String) {
+fun TaskMessageText(string: () -> String) {
     BasicText(
         modifier = Modifier
-            .width(260.dp),
-        text = string,
-        style = TextStyle(fontSize = 30.sp),
+            .height(60.dp)
+            .widthIn(max = 265.dp),
+        text = string(),
+        style = TextStyle(textAlign = TextAlign.Center),
         autoSize = TextAutoSize.StepBased(
-            minFontSize = 28.sp,
+            minFontSize = 26.sp,
             maxFontSize = 30.sp,
             stepSize = 2.sp
         )
@@ -259,9 +266,7 @@ fun HugeButton(
                         }
                     }
             }
-            .clickable(
-                onClick = onClickAction,
-            )
+
             .offset(shadowOffset.x, shadowOffset.y)
             .background(shadowColor, shape)
             .offset(-shadowOffset.x, -shadowOffset.y)
@@ -270,6 +275,10 @@ fun HugeButton(
                 IntOffset(dp.x.toPx().toInt(), dp.y.toPx().toInt())
             }
             .background(containerColor, shape)
+            .clip(CircleShape)
+            .clickable(
+                onClick = onClickAction,
+            )
 
     ) {
         content()

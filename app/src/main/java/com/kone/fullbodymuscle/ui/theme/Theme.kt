@@ -19,7 +19,9 @@ private val DarkColorScheme = darkColorScheme(
     tertiary = OrangeDark,
     onBackground = White,
     onSurface = White,
-    onTertiary = White
+    onTertiary = White,
+    onSurfaceVariant = NudeOrange
+
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -31,7 +33,8 @@ private val LightColorScheme = lightColorScheme(
     surface = White,
     tertiary = Orange,
     onSurface = DarkGray,
-    onTertiary = Black
+    onTertiary = Black,
+    onSurfaceVariant = NudeOrange
 )
 
     /* Other default colors to override

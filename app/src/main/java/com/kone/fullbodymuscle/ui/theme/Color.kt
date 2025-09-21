@@ -15,3 +15,5 @@ val Green = Color(0xFF00C853)
 val Blue = Color(0xFF1976D2)
 val BlueDark = Color(0xFF0D47A1)
 val OnBlue = Color(0xFFFFFFFF)
+
+val Lightning =  Color(0xFFFFD300)   // creamy nude orange (main)
