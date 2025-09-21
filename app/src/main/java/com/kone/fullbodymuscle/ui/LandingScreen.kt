@@ -176,7 +176,9 @@ fun LayoutOwner(
 
     ) {
     Column(
-        modifier = Modifier.fillMaxSize().background(color = MaterialTheme.colorScheme.onSurfaceVariant,),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = MaterialTheme.colorScheme.onSurfaceVariant),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -294,8 +296,13 @@ fun BackgroundImage(resource: Painter) {
 }
 
 @Composable
-fun BoxScope.ButtonText(onContainerColor: Color = MaterialTheme.colorScheme.onPrimary) {
-    Text(color = onContainerColor, text = "Good Deed", modifier = Modifier.align(Alignment.Center))
+fun BoxScope.ButtonText(onContainerColor: Color = MaterialTheme.colorScheme.onTertiary) {
+    Text(
+        color = onContainerColor,
+        text = "Do Good",
+        fontSize = 24.sp,
+        modifier = Modifier.align(Alignment.Center)
+    )
 }
 
 
